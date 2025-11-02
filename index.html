@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ru" data-theme="auto">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A320neo · MSFS 2024 · Полностью реалистичный чек-лист</title>
+    <meta
+      name="description"
+      content="Полностью реалистичный чек-лист A320neo для MSFS 2024: детальные SOP, PF/PM callouts, memory items и пошаговая подготовка."
+    />
+    <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAK0lEQVR4nO3BMQEAAADCoPVPbQ8HFAAAAAAAAAAAAAAAAAAAAAAAAJ8GAAE1wq5cAAAAAElFTkSuQmCC" />
+    <link rel="stylesheet" href="assets/css/app.css" />
+    <script defer src="assets/js/app.js"></script>
+  </head>
+  <body>
+    <noscript>
+      <div class="noscript">
+        Включите JavaScript, чтобы использовать интерактивный чек-лист, либо воспользуйтесь печатью PDF.
+      </div>
+    </noscript>
+    <div class="app" id="app" hidden>
+      <aside class="sidebar" aria-label="Боковое меню">
+        <div class="sidebar__brand">
+          <div class="sidebar__title">
+            <b>A320neo · MSFS 2024</b>
+            <span class="sidebar__subtitle">UNIFIED · v11 · ALL-IN-ONE</span>
+          </div>
+          <div class="sidebar__toggles">
+            <button class="btn btn--small" data-action="theme">Тема</button>
+            <button class="btn btn--small" data-action="compact">Компакт</button>
+            <button class="btn btn--small sidebar__collapse" data-action="toggleSidebar" aria-pressed="false" aria-label="Скрыть боковое меню">
+              ←
+            </button>
+          </div>
+        </div>
+        <div class="sidebar__search">
+          <label class="sr-only" for="searchInput">Поиск</label>
+          <input id="searchInput" type="search" placeholder="Поиск… (PACKS / APPR / GPWS…)" autocomplete="off" />
+        </div>
+        <div class="sidebar__filters">
+          <label class="filter">
+            <input id="filterCritical" type="checkbox" />
+            <span>Только критичные</span>
+          </label>
+          <label class="filter">
+            <input id="filterFavorites" type="checkbox" />
+            <span>Только избранные секции</span>
+          </label>
+        </div>
+        <nav class="sidebar__nav" id="nav" aria-label="Навигация по секциям"></nav>
+        <div class="sidebar__stats" id="stats">Прогресс: 0% · Шагов: 0</div>
+        <footer class="sidebar__footer">
+          <p><b>Шорткаты:</b> / поиск, J/K — секция ±, Space — чек, Ctrl+S — экспорт, Ctrl+O — импорт.</p>
+          <p>Учебный материал для симулятора. Не для реальной авиации.</p>
+        </footer>
+      </aside>
+      <main class="main" id="main" tabindex="-1">
+        <header class="topbar" data-shadow>
+          <div class="topbar__inner">
+            <h1 class="topbar__title">A320neo · Полностью реалистичный чек-лист (MSFS 2024)</h1>
+            <p class="topbar__subtitle">
+              Полный профессиональный SOP: от cold & dark до secure, подробные callouts PF/PM, FMA мониторинг, память по авариям и двуязычные подсказки.
+            </p>
+            <div class="topbar__controls">
+              <button class="btn" data-action="expandAll">Развернуть всё</button>
+              <button class="btn" data-action="collapseAll">Свернуть всё</button>
+              <button class="btn btn--ok" data-action="resetAll">Сбросить прогресс</button>
+              <button class="btn btn--ghost" data-action="toggleEN" aria-pressed="false">EN-подсказки</button>
+              <button class="btn" data-action="focusMode" aria-pressed="false">Фокус по секции</button>
+              <button class="btn" data-action="export">Экспорт JSON</button>
+              <button class="btn" data-action="import">Импорт JSON</button>
+              <button class="btn btn--warn" data-action="print">Печать PDF</button>
+            </div>
+            <div class="topbar__chips" id="phaseFilters" role="group" aria-label="Фильтр фаз чек-листа"></div>
+            <div class="topbar__timeline" id="timeline" role="list"></div>
+            <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <i id="progressBar"></i>
+            </div>
+          </div>
+        </header>
+        <section class="dashboard" id="dashboard" aria-live="polite">
+          <div class="dashboard__card" data-metric="total">
+            <span class="dashboard__value">0</span>
+            <span class="dashboard__label">Шагов по фильтру</span>
+          </div>
+          <div class="dashboard__card" data-metric="done">
+            <span class="dashboard__value">0</span>
+            <span class="dashboard__label">Выполнено</span>
+          </div>
+          <div class="dashboard__card" data-metric="remaining">
+            <span class="dashboard__value">0</span>
+            <span class="dashboard__label">Осталось</span>
+          </div>
+          <div class="dashboard__card" data-metric="critical">
+            <span class="dashboard__value">0</span>
+            <span class="dashboard__label">Критичные</span>
+          </div>
+          <div class="dashboard__card" data-metric="overall">
+            <span class="dashboard__value">0</span>
+            <span class="dashboard__label">Полный SOP</span>
+          </div>
+        </section>
+        <div class="content" id="content">
+          <section class="card">
+            <header class="card__header">
+              <h2>Загрузка…</h2>
+            </header>
+            <div class="card__body">Если пусто — появится окно с ошибкой.</div>
+          </section>
+        </div>
+        <aside class="inspector" id="nextStep" aria-live="полite" hidden>
+          <div class="inspector__header">
+            <span class="inspector__title">Следующий шаг</span>
+            <button class="btn btn--ghost btn--small" data-action="jumpSection" data-section="" disabled>Открыть</button>
+          </div>
+          <div class="inspector__body" id="nextStepBody">
+            <p class="inspector__placeholder">Все шаги выполнены! 🎉</p>
+          </div>
+        </aside>
+        <div class="mini" id="miniProgress" aria-live="polite">
+          <span>Глобальный прогресс:</span>
+          <span class="mini__pct" id="miniPct">0%</span>
+          <div class="progress progress--mini"><i id="miniBar"></i></div>
+        </div>
+        <div class="fab" aria-label="Быстрые действия">
+          <button class="fab__btn" data-action="scrollTop" title="Вверх">↑</button>
+          <button class="fab__btn" data-action="scrollBottom" title="Вниз">↓</button>
+        </div>
+        <footer class="main__footer">Учебный материал. Не для реальной авиации.</footer>
+      </main>
+    </div>
+    <div class="overlay" id="errorOverlay" role="alertdialog" aria-modal="true" hidden>
+      <div class="overlay__dialog" role="document">
+        <h2>Ошибка скрипта</h2>
+        <p id="errorMessage"></p>
+        <pre id="errorStack" tabindex="0"></pre>
+        <button class="btn btn--ok" data-action="closeError">Скрыть</button>
+      </div>
+    </div>
+  </body>
+</html>
