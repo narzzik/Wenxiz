@@ -67,6 +67,7 @@
               <button class="btn btn--ok" data-action="resetAll">Сбросить прогресс</button>
               <button class="btn btn--ghost" data-action="toggleEN" aria-pressed="false">EN-подсказки</button>
               <button class="btn" data-action="focusMode" aria-pressed="false">Фокус по секции</button>
+              <button class="btn" data-action="panelGuide">Карта панелей</button>
               <button class="btn" data-action="export">Экспорт JSON</button>
               <button class="btn" data-action="import">Импорт JSON</button>
               <button class="btn btn--warn" data-action="print">Печать PDF</button>
@@ -95,11 +96,16 @@
             <span class="dashboard__value">0</span>
             <span class="dashboard__label">Критичные</span>
           </div>
+          <div class="dashboard__card" data-metric="panel">
+            <span class="dashboard__value">Все панели</span>
+            <span class="dashboard__label">Фильтр панели</span>
+          </div>
           <div class="dashboard__card" data-metric="overall">
             <span class="dashboard__value">0</span>
             <span class="dashboard__label">Полный SOP</span>
           </div>
         </section>
+        <section class="panelboard" id="panelBoard" aria-label="Расположение панелей"></section>
         <div class="content" id="content">
           <section class="card">
             <header class="card__header">
@@ -135,6 +141,19 @@
         <p id="errorMessage"></p>
         <pre id="errorStack" tabindex="0"></pre>
         <button class="btn btn--ok" data-action="closeError">Скрыть</button>
+      </div>
+    </div>
+    <div class="panel-guide" id="panelGuide" role="dialog" aria-modal="true" hidden>
+      <div class="panel-guide__dialog">
+        <header class="panel-guide__header">
+          <h2>Карта панелей кабины</h2>
+          <button class="btn btn--ghost btn--small" data-action="panelGuideClose">Закрыть</button>
+        </header>
+        <p class="panel-guide__intro">
+          Каждая карточка описывает, где физически находится панель и какие системы на ней живут. Нажмите на панель в списке, чтобы
+          отфильтровать чек-лист.
+        </p>
+        <div class="panel-guide__list" id="panelGuideList"></div>
       </div>
     </div>
   </body>

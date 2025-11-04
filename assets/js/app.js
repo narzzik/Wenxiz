@@ -1161,6 +1161,205 @@
 
   const PHASE_KEYS = Object.keys(PHASE_GROUPS);
 
+  const PANEL_INFO = {
+    all: {
+      title: "Все панели",
+      short: "ALL",
+      hint: "Показывать все шаги",
+      description: "Снимает фильтр по расположению и показывает полный чек-лист.",
+    },
+    overhead: {
+      title: "Overhead (OVHD)",
+      short: "OVHD",
+      hint: "Верхняя панель: электрика, топливо, кондиционирование, антиоблед.",
+      description: "Расположена над лобовым стеклом: BAT, ELEC, FUEL, HYD, AIR CON, APU, LIGHTS, ANTI-ICE, SIGNS.",
+    },
+    glareshield: {
+      title: "FCU / Glareshield",
+      short: "FCU",
+      hint: "Перед пилотами: скорость/курс/баро, кнопки APPR/LOC/LS.",
+      description: "Панель автопилота под лобовым стеклом: SPD/HDG/ALT, push/pull, AP/FD/A/THR режимы, BARO и LS.",
+    },
+    pedestal: {
+      title: "Центральный пульт (Pedestal)",
+      short: "PDS",
+      hint: "Между креслами: тяги, спойлеры, TCAS, радиостанции, автотормоза.",
+      description: "Панель между креслами: тяги, ENGINE MASTER, SPEED BRAKE, FLAPS, AUTOBRAKE, TCAS/XPNDR и радиопанели.",
+    },
+    mcdu: {
+      title: "MCDU / FMS",
+      short: "MCDU",
+      hint: "Блоки FMS слева и справа педестала.",
+      description: "Компьютеры управления полётом: INIT, F-PLN, PERF, RAD NAV, SEC F-PLN, DCDU/ACARS.",
+    },
+    ecam: {
+      title: "ECAM / SD",
+      short: "ECAM",
+      hint: "Центральные дисплеи систем и сообщения.",
+      description: "В центральной панели: верхний ECAM с предупреждениями и нижний SD с системными страницами и мемо.",
+    },
+    cabin: {
+      title: "Связь с салоном",
+      short: "CAB",
+      hint: "Табло, брифинг и взаимодействие с бортпроводниками.",
+      description: "Системы взаимодействия с салоном: табло SEAT BELTS/NO SMOKING, interphone, Cabin Ready.",
+    },
+    exterior: {
+      title: "Внешние операции",
+      short: "EXT",
+      hint: "Огни, наземные операции, обход, pushback.",
+      description: "Действия вне кабины: внешние огни, pushback, запросы перрону, контроль тормозов при рулении/посадке.",
+    },
+    crew: {
+      title: "PF/PM распределение",
+      short: "CREW",
+      hint: "Брифинги и взаимодействие экипажа.",
+      description: "Голосовые действия и координация PF/PM: распределение обязанностей, callouts, проверки FMA.",
+    },
+    callouts: {
+      title: "Callouts и чек-листы",
+      short: "CALL",
+      hint: "Голосовые callouts, FMA подтверждения и challenge-response.",
+      description: "Шаги, где главное — озвучивание: V1, VR, «Positive climb», чек-листы и подтверждения режимов.",
+    },
+    flightdeck: {
+      title: "Общие проверки кабины",
+      short: "FDK",
+      hint: "Документы, кресла, педали, маски, общее состояние.",
+      description: "Пункты без привязки к панели: безопасность, документы, кресла, кислород, общие проверки кабины.",
+    },
+  };
+
+  const PANEL_ORDER = [
+    "all",
+    "overhead",
+    "glareshield",
+    "pedestal",
+    "mcdu",
+    "ecam",
+    "cabin",
+    "exterior",
+    "crew",
+    "callouts",
+    "flightdeck",
+  ];
+
+  const PANEL_RULES = [
+    {
+      key: "overhead",
+      tests: [
+        /ovhd/,
+        /overhead/,
+        /apu/,
+        /pack/,
+        /bleed/,
+        /elec/,
+        /adirs/,
+        /sign/,
+        /seat belt/,
+        /emer/,
+        /window/,
+        /anti-?ice/,
+        /pressur/,
+        /fuel/,
+        /hyd/,
+        /wing/,
+        /probe/,
+        /\bir\b/,
+        /\bbat\b/,
+        /door/,
+        /slide/,
+        /light/,
+      ],
+    },
+    {
+      key: "mcdu",
+      tests: [/mcdu/, /f-?pln/, /init/, /perf/, /sec f-?pln/, /acars/, /atsu/, /datac/, /prog/],
+    },
+    {
+      key: "glareshield",
+      tests: [/fcu/, /glareshield/, /baro/, /\bhdg\b/, /\bspd\b/, /vs/, /fpa/, /\balt\b/, /appr/, /loc/, /ls/, /fma/, /chrono/],
+    },
+    {
+      key: "pedestal",
+      tests: [
+        /pedestal/,
+        /thrust/,
+        /speed brake/,
+        /spoiler/,
+        /flap/,
+        /trim/,
+        /rudder/,
+        /brake/,
+        /tiller/,
+        /tcas/,
+        /transponder/,
+        /xpdr/,
+        /radio/,
+        /freq/,
+        /park brk/,
+        /parking brake/,
+        /autobrake/,
+        /auto brk/,
+        /engine mode/,
+        /master/,
+        /ign/,
+        /reverse/,
+        /toga/,
+      ],
+    },
+    {
+      key: "ecam",
+      tests: [/ecam/, /status/, /memo/, /sd/, /system display/, /f\/?ctl/, /engine page/, /bleed page/],
+    },
+    {
+      key: "cabin",
+      tests: [/cabin/, /бортпровод/, /пассаж/, /салон/, /crew call/],
+    },
+    {
+      key: "exterior",
+      tests: [/strobe/, /landing light/, /logo light/, /nav light/, /beacon/, /anti-?collision/, /outside/, /runway vacated/, /walkaround/, /pushback/, /external/, /deicing/, /наруж/],
+    },
+    {
+      key: "crew",
+      tests: [/\bpf\b/, /\bpm\b/, /оба/, /обязан/, /брифинг/, /briefing/],
+    },
+    {
+      key: "callouts",
+      tests: [
+        /minimum/,
+        /rotate/,
+        /positive climb/,
+        /gear up/,
+        /gear down/,
+        /\bv1\b/,
+        /one hundred/,
+        /hundred/,
+        /retard/,
+        /go-?around/,
+        /acceleration alt/,
+        /after to checklist/,
+        /after landing checklist/,
+        /approach checklist/,
+        /landing checklist/,
+        /climb checklist/,
+        /before to checklist/,
+        /touchdown/,
+        /80 kt/,
+        /70\/60/,
+        /s-?speed/,
+        /f-?speed/,
+        /callout/,
+        /ready/,
+        /stabilized/,
+      ],
+    },
+    {
+      key: "flightdeck",
+      tests: [/cockpit/, /documents/, /logbook/, /seat/, /pedal/, /oxygen/, /audio/, /wipers/, /windows/, /brakes/, /parking/, /safety/, /маск/, /ремн/, /фонар/, /тормоз/],
+    },
+  ];
+
   const DEFAULT_BRIEF = `DEP RWY:____  SID:____  TRANS ALT:____\nTAXI / HOTSPOTS: ______________________________\nTAKEOFF PERF → V1 ___  VR ___  V2 ___  FLEX/TOGA ___  FLAPS ___  THS ___\nENG OUT: Straight ahead to ____ ; Turn ____ ; ACC ALT ____ ; EO ALT ____\nCRZ FL:____  CI:___  STEP: ___  WIND/TEMP: __________\nARR RWY:____  STAR:____  APPR: ILS/RNAV/LOC ___  MINIMA BARO ___ / RADIO ___\nLANDING PERF: LDG DIST ___m  AUTOBRAKE ___  REV strategy ___\nGO-AROUND: TOGA; Pitch ___°; Track ____; Missed Alt ____\nTHREATS / TEM: WX ____ ; Terrain ____ ; MEL/CDL ____ ; Pax/Cargo ____`;
 
   const debounce = (fn, wait = 250) => {
@@ -1182,6 +1381,13 @@
   };
 
   const escapeRegExp = (value = "") => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const escapeHTML = (value = "") =>
+    value
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
 
   const showErrorOverlay = (message, stack) => {
     const overlay = document.getElementById("errorOverlay");
@@ -1225,12 +1431,16 @@
       this.timeline = document.getElementById("timeline");
       this.dashboard = document.getElementById("dashboard");
       this.nextStep = document.getElementById("nextStep");
+      this.panelBoard = document.getElementById("panelBoard");
+      this.panelGuide = document.getElementById("panelGuide");
+      this.panelGuideList = document.getElementById("panelGuideList");
       this.saveStateDebounced = debounce(() => this.saveState());
       this.lastFocusedCheckboxId = null;
       this.observer = null;
       this.currentTheme = this.getStoredTheme();
       this.currentQuery = (this.state._q || "").toLowerCase();
       this.activePhase = PHASE_GROUPS[this.state._phase] ? this.state._phase : "all";
+      this.activePanel = PANEL_INFO[this.state._panel] ? this.state._panel : "all";
       this.isFocusMode = !!this.state._focusMode;
       this.focusSectionId = this.state._focusSection || null;
       this.lastStats = null;
@@ -1240,6 +1450,9 @@
       this.prepareEnvironment();
       this.bindGlobalEvents();
       this.renderPhaseFilters();
+      this.renderPanelBoard();
+      this.renderPanelGuide();
+      this.updatePanelFilterState();
       this.renderAll();
       this.restoreImages();
       if (this.app) this.app.hidden = false;
@@ -1362,6 +1575,131 @@
       });
     }
 
+    renderPanelBoard() {
+      if (!this.panelBoard) return;
+      this.panelBoard.innerHTML = "";
+      PANEL_ORDER.forEach((key) => {
+        const info = PANEL_INFO[key];
+        if (!info) return;
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "panelboard__card";
+        card.dataset.action = "panelFilter";
+        card.dataset.panel = key;
+        card.setAttribute("aria-pressed", String(this.activePanel === key));
+
+        const title = document.createElement("span");
+        title.className = "panelboard__title";
+        const badge = document.createElement("span");
+        badge.className = `panel-badge panel-badge--${key}`;
+        badge.textContent = info.short;
+        title.append(badge, document.createTextNode(` ${info.title}`));
+
+        const hint = document.createElement("span");
+        hint.className = "panelboard__hint";
+        hint.textContent = info.hint;
+
+        const meta = document.createElement("span");
+        meta.className = "panelboard__meta";
+        meta.dataset.panelMeta = key;
+        meta.textContent = "0 / 0";
+
+        const progress = document.createElement("div");
+        progress.className = "panelboard__progress";
+        progress.innerHTML = `<i data-panel-progress="${key}"></i>`;
+
+        card.append(title, hint, meta, progress);
+        this.panelBoard.appendChild(card);
+      });
+    }
+
+    renderPanelGuide() {
+      if (!this.panelGuideList) return;
+      this.panelGuideList.innerHTML = "";
+      PANEL_ORDER.filter((key) => key !== "all").forEach((key) => {
+        const info = PANEL_INFO[key];
+        if (!info) return;
+        const item = document.createElement("article");
+        item.className = "panel-guide__item";
+
+        const heading = document.createElement("h3");
+        const badge = document.createElement("span");
+        badge.className = `panel-badge panel-badge--${key}`;
+        badge.textContent = info.short;
+        heading.append(badge, document.createTextNode(` ${info.title}`));
+
+        const hint = document.createElement("p");
+        hint.textContent = info.hint;
+
+        const description = document.createElement("p");
+        description.textContent = info.description;
+
+        item.append(heading, hint, description);
+        this.panelGuideList.appendChild(item);
+      });
+    }
+
+    updatePanelFilterState() {
+      if (this.activePanel && this.activePanel !== "all") {
+        document.body.setAttribute("data-panel-filter", this.activePanel);
+      } else {
+        document.body.removeAttribute("data-panel-filter");
+      }
+      if (!this.panelBoard) return;
+      this.panelBoard.querySelectorAll("[data-panel]").forEach((button) => {
+        const key = button.getAttribute("data-panel");
+        const isActive = key === this.activePanel;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+    }
+
+    updatePanelBoard(stats) {
+      if (!this.panelBoard || !stats?.perPanel) return;
+      this.panelBoard.querySelectorAll("[data-panel]").forEach((button) => {
+        const key = button.getAttribute("data-panel");
+        const panelStats = stats.perPanel.get(key) || {
+          total: 0,
+          done: 0,
+          filteredTotal: 0,
+          filteredDone: 0,
+        };
+        const denominator = panelStats.filteredTotal || panelStats.total || 0;
+        const numerator = panelStats.filteredTotal ? panelStats.filteredDone : panelStats.done;
+        const meta = button.querySelector(`[data-panel-meta="${key}"]`);
+        if (meta) meta.textContent = `${numerator} / ${denominator}`;
+        const progress = button.querySelector(`[data-panel-progress="${key}"]`);
+        if (progress) {
+          const pct = denominator ? Math.round((numerator / denominator) * 100) : 0;
+          progress.style.width = `${pct}%`;
+        }
+        const isActive = key === this.activePanel;
+        button.classList.toggle("is-active", isActive);
+        button.classList.toggle("is-dimmed", this.activePanel !== "all" && key !== this.activePanel);
+        button.classList.toggle("is-empty", denominator === 0);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+    }
+
+    panelMatches(panelKey) {
+      return this.activePanel === "all" || panelKey === this.activePanel;
+    }
+
+    sectionMatchesPanel(section) {
+      if (this.activePanel === "all") return true;
+      return (section.items || []).some((item) => this.panelMatches(this.getPanelKey(item.where, item.what)));
+    }
+
+    getPanelKey(where = "", what = "") {
+      const text = `${where || ""} ${what || ""}`.toLowerCase();
+      for (const rule of PANEL_RULES) {
+        if (rule.tests.some((test) => test.test(text))) {
+          return rule.key;
+        }
+      }
+      return "flightdeck";
+    }
+
     renderAll() {
       if (!this.content || !this.nav) return;
       this.content.innerHTML = "";
@@ -1370,12 +1708,16 @@
       const withEN = !!this.state._withEN;
       this.currentQuery = (this.state._q || "").toLowerCase();
 
+      this.renderPanelBoard();
+      this.updatePanelFilterState();
+
       const filteredSections = [];
       this.data.forEach((section, sectionIndex) => {
         const isFavorite = !!this.state[`fav_${section.id}`];
         if (showFavoritesOnly && !isFavorite) return;
         const matchesPhase = this.activePhase === "all" || PHASE_GROUPS[this.activePhase]?.sections.includes(section.id);
         if (!matchesPhase) return;
+        if (!this.sectionMatchesPanel(section)) return;
         filteredSections.push({ section, sectionIndex, isFavorite });
       });
 
@@ -1521,7 +1863,7 @@
       head.className = "checklist__head";
       head.innerHTML = `
         <div></div>
-        <div>ГДЕ</div>
+        <div>ПАНЕЛЬ · ГДЕ</div>
         <div>ЧТО сделать${withEN ? " / EN" : ""}</div>
         <div>ПОЧЕМУ</div>
         <div></div>
@@ -1587,12 +1929,19 @@
       const matches = !query || searchText.includes(query);
       if (!matches) return null;
 
+      const panelKey = this.getPanelKey(item.where, item.what);
+      if (!this.panelMatches(panelKey)) return null;
+      const panelInfo = PANEL_INFO[panelKey] || PANEL_INFO.flightdeck;
+      const isPanelActive = this.activePanel !== "all" && panelKey === this.activePanel;
+
       const row = document.createElement("div");
       row.className = "checklist__row";
       row.dataset.sectionIndex = String(sectionIndex);
       row.dataset.itemIndex = String(itemIndex);
       row.dataset.stateKey = stateKey;
+      row.dataset.panel = panelKey;
       if (isCritical) row.classList.add("is-critical");
+      if (isPanelActive) row.classList.add("is-panel-focus");
 
       const checkboxCell = document.createElement("div");
       checkboxCell.className = "checklist__checkbox";
@@ -1605,7 +1954,36 @@
 
       const whereCell = document.createElement("div");
       whereCell.className = "checklist__cell where";
-      whereCell.innerHTML = this.decorateSearch(item.where, query);
+      const panelWrap = document.createElement("div");
+      panelWrap.className = "where__panel";
+
+      const panelButton = document.createElement("button");
+      panelButton.type = "button";
+      panelButton.className = "panel-chip";
+      panelButton.dataset.action = "panelFocus";
+      panelButton.dataset.panel = panelKey;
+      panelButton.setAttribute("aria-pressed", String(this.activePanel === panelKey));
+      panelButton.setAttribute("aria-label", `Показать шаги панели «${panelInfo.title}»`);
+      panelButton.title = panelInfo.description;
+      const badge = document.createElement("span");
+      badge.className = `panel-badge panel-badge--${panelKey}`;
+      badge.textContent = panelInfo.short;
+      const label = document.createElement("span");
+      label.className = "panel-chip__label";
+      label.textContent = panelInfo.title;
+      panelButton.append(badge, label);
+      panelWrap.appendChild(panelButton);
+
+      const whereHint = document.createElement("span");
+      whereHint.className = "where__hint";
+      whereHint.textContent = panelInfo.hint;
+      panelWrap.appendChild(whereHint);
+
+      const wherePath = document.createElement("div");
+      wherePath.className = "where__path";
+      wherePath.innerHTML = this.formatWhere(item.where, query);
+
+      whereCell.append(panelWrap, wherePath);
 
       const whatCell = document.createElement("div");
       whatCell.className = "checklist__cell what";
@@ -1750,6 +2128,20 @@
         case "phaseFilter":
           this.setPhase(actionEl.getAttribute("data-phase"));
           break;
+        case "panelFilter":
+          this.setPanel(actionEl.getAttribute("data-panel"));
+          break;
+        case "panelFocus":
+          this.setPanel(
+            this.activePanel === actionEl.getAttribute("data-panel") ? "all" : actionEl.getAttribute("data-panel"),
+          );
+          break;
+        case "panelGuide":
+          this.openPanelGuide();
+          break;
+        case "panelGuideClose":
+          this.closePanelGuide();
+          break;
         case "jumpSection":
           this.jumpToSection(actionEl.getAttribute("data-section"));
           break;
@@ -1852,6 +2244,12 @@
       const active = document.activeElement;
       const isTyping = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA");
       if (isTyping && !event.ctrlKey && !event.metaKey) return;
+
+      if (event.key === "Escape" && this.panelGuide && !this.panelGuide.hidden) {
+        event.preventDefault();
+        this.closePanelGuide();
+        return;
+      }
 
       if (event.key === "/") {
         event.preventDefault();
@@ -2019,6 +2417,32 @@
       this.renderAll();
     }
 
+    setPanel(panel) {
+      const next = PANEL_INFO[panel] ? panel : "all";
+      if (this.activePanel === next) return;
+      this.activePanel = next;
+      if (next === "all") delete this.state._panel;
+      else this.state._panel = next;
+      this.saveStateDebounced();
+      this.updatePanelFilterState();
+      this.renderAll();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    openPanelGuide() {
+      if (!this.panelGuide) return;
+      this.panelGuide.hidden = false;
+      document.body.classList.add("is-modal-open");
+      const closeButton = this.panelGuide.querySelector('[data-action="panelGuideClose"]');
+      if (closeButton instanceof HTMLElement) closeButton.focus();
+    }
+
+    closePanelGuide() {
+      if (!this.panelGuide) return;
+      this.panelGuide.hidden = true;
+      document.body.classList.remove("is-modal-open");
+    }
+
     toggleFocusMode() {
       this.isFocusMode = !this.isFocusMode;
       this.state._focusMode = this.isFocusMode;
@@ -2083,15 +2507,18 @@
       });
       this.state._q = "";
       this.state._phase = "all";
+      delete this.state._panel;
       delete this.state._focusMode;
       delete this.state._focusSection;
       this.activePhase = "all";
+      this.activePanel = "all";
       this.isFocusMode = false;
       this.focusSectionId = null;
       document.body.classList.remove("is-focus-mode");
       if (this.searchInput) this.searchInput.value = "";
       this.saveStateDebounced();
       this.renderPhaseFilters();
+      this.updatePanelFilterState();
       this.renderAll();
     }
     toggleEN() {
@@ -2123,11 +2550,13 @@
             const imported = JSON.parse(reader.result);
             Object.assign(this.state, imported);
             this.activePhase = PHASE_GROUPS[this.state._phase] ? this.state._phase : "all";
+            this.activePanel = PANEL_INFO[this.state._panel] ? this.state._panel : "all";
             this.isFocusMode = !!this.state._focusMode;
             this.focusSectionId = this.state._focusSection || null;
             document.body.classList.toggle("is-focus-mode", this.isFocusMode);
             this.saveStateDebounced();
             this.renderPhaseFilters();
+            this.updatePanelFilterState();
             this.updateToggleStates();
             this.renderAll();
             this.restoreSearchQuery();
@@ -2152,6 +2581,7 @@
           criticalDone: 0,
         },
         perSection: new Map(),
+        perPanel: new Map(),
         nextItem: null,
         visibleSections: [],
       };
@@ -2159,7 +2589,9 @@
       this.data.forEach((section, sectionIndex) => {
         const isFavorite = !!this.state[`fav_${section.id}`];
         const matchesPhase = this.activePhase === "all" || PHASE_GROUPS[this.activePhase]?.sections.includes(section.id);
-        const sectionVisible = (!this.state._favs || isFavorite) && matchesPhase;
+        const sectionEligible = (!this.state._favs || isFavorite) && matchesPhase;
+        const sectionMatchesPanel = this.sectionMatchesPanel(section);
+        const sectionVisible = sectionEligible && sectionMatchesPanel;
         if (sectionVisible) stats.visibleSections.push(section.id);
 
         const items = section.items || [];
@@ -2183,6 +2615,9 @@
           const matchesCriticalFilter = !this.state._crit || isCritical;
           const searchText = `${item.where} ${item.what} ${item.en || ""} ${item.why}`.toLowerCase();
           const matchesSearch = !this.currentQuery || searchText.includes(this.currentQuery);
+          const panelKey = this.getPanelKey(item.where, item.what);
+          const matchesPanelFilter = this.panelMatches(panelKey);
+          const matchesSharedFilters = sectionEligible && matchesCriticalFilter && matchesSearch;
 
           stats.global.fullTotal += 1;
           if (isDone) stats.global.fullDone += 1;
@@ -2197,7 +2632,7 @@
             if (isDone) sectionStats.criticalDone += 1;
           }
 
-          if (matchesCriticalFilter) {
+          if (matchesCriticalFilter && matchesPanelFilter) {
             sectionStats.filteredTotal += 1;
             if (isDone) sectionStats.filteredDone += 1;
             if (sectionVisible) {
@@ -2206,18 +2641,46 @@
             }
           }
 
-          if (sectionVisible && matchesCriticalFilter && matchesSearch && !isDone && !stats.nextItem) {
+          if (sectionVisible && matchesCriticalFilter && matchesPanelFilter && matchesSearch && !isDone && !stats.nextItem) {
             stats.nextItem = {
               section,
               sectionIndex,
               item,
               itemIndex,
               isCritical,
+              panelKey,
             };
           }
+
+          const panelStats = stats.perPanel.get(panelKey) || {
+            total: 0,
+            done: 0,
+            filteredTotal: 0,
+            filteredDone: 0,
+          };
+          panelStats.total += 1;
+          if (isDone) panelStats.done += 1;
+          if (matchesSharedFilters) {
+            panelStats.filteredTotal += 1;
+            if (isDone) panelStats.filteredDone += 1;
+          }
+          stats.perPanel.set(panelKey, panelStats);
         });
 
         stats.perSection.set(section.id, sectionStats);
+      });
+
+      let panelFilteredTotal = 0;
+      let panelFilteredDone = 0;
+      stats.perPanel.forEach((panelStats) => {
+        panelFilteredTotal += panelStats.filteredTotal;
+        panelFilteredDone += panelStats.filteredDone;
+      });
+      stats.perPanel.set("all", {
+        total: stats.global.fullTotal,
+        done: stats.global.fullDone,
+        filteredTotal: panelFilteredTotal,
+        filteredDone: panelFilteredDone,
       });
 
       this.lastStats = stats;
@@ -2229,8 +2692,9 @@
       stats.perSection.forEach((sectionStats, sectionId) => {
         const bar = this.content.querySelector(`[data-section-progress="${sectionId}"]`);
         if (!bar) return;
-        const denominator = this.state._crit ? sectionStats.filteredTotal : sectionStats.total;
-        const numerator = this.state._crit ? sectionStats.filteredDone : sectionStats.done;
+        const useFiltered = this.state._crit || this.activePanel !== "all";
+        const denominator = useFiltered ? sectionStats.filteredTotal : sectionStats.total;
+        const numerator = useFiltered ? sectionStats.filteredDone : sectionStats.done;
         const percentage = denominator ? Math.round((numerator / denominator) * 100) : 0;
         bar.style.width = `${percentage}%`;
       });
@@ -2245,6 +2709,7 @@
       this.updateTimeline(stats);
       this.updateDashboard(stats);
       this.updateNextStep(stats);
+      this.updatePanelBoard(stats);
     }
 
     updateTimeline(stats) {
@@ -2257,13 +2722,14 @@
         else if (!document.getElementById(sectionId)) item.classList.add("is-ghost");
         if (this.isFocusMode && this.focusSectionId === sectionId) item.classList.add("is-active");
 
-        const denominator = this.state._crit ? sectionStats.filteredTotal : sectionStats.total;
-        const numerator = this.state._crit ? sectionStats.filteredDone : sectionStats.done;
+        const useFiltered = this.state._crit || this.activePanel !== "all";
+        const denominator = useFiltered ? sectionStats.filteredTotal : sectionStats.total;
+        const numerator = useFiltered ? sectionStats.filteredDone : sectionStats.done;
         const pct = denominator ? Math.round((numerator / denominator) * 100) : 0;
         const progress = item.querySelector(".timeline__progress i");
         if (progress) progress.style.width = `${pct}%`;
         const meta = item.querySelector(".timeline__meta");
-        if (meta) meta.textContent = `${sectionStats.filteredDone}/${sectionStats.filteredTotal || sectionStats.total || 0}`;
+        if (meta) meta.textContent = `${numerator}/${denominator || 0}`;
       });
     }
 
@@ -2282,6 +2748,17 @@
       );
       const overallPct = stats.global.fullTotal ? Math.round((stats.global.fullDone / stats.global.fullTotal) * 100) : 0;
       setValue("overall", `${overallPct}%`);
+      const panelInfo = PANEL_INFO[this.activePanel] || PANEL_INFO.all;
+      const panelStats = stats.perPanel.get(this.activePanel) || stats.perPanel.get("all") || {
+        total: 0,
+        done: 0,
+        filteredTotal: 0,
+        filteredDone: 0,
+      };
+      const panelDenominator = panelStats.filteredTotal || panelStats.total || 0;
+      const panelNumerator = panelStats.filteredTotal ? panelStats.filteredDone : panelStats.done;
+      const panelSuffix = panelDenominator ? ` · ${panelNumerator} / ${panelDenominator}` : "";
+      setValue("panel", `${panelInfo.title}${panelSuffix}`);
     }
 
     updateNextStep(stats) {
@@ -2306,12 +2783,20 @@
         return;
       }
 
-      const { section, item, isCritical } = stats.nextItem;
+      const { section, item, isCritical, panelKey } = stats.nextItem;
+      const resolvedPanelKey = panelKey || this.getPanelKey(item.where, item.what);
+      const panelInfo = PANEL_INFO[resolvedPanelKey] || PANEL_INFO.flightdeck;
+      const wherePath = this.formatWhere(item.where, this.currentQuery);
+      const whatText = this.decorateSearch(item.what, this.currentQuery);
+      const whyText = this.decorateSearch(item.why, this.currentQuery);
+      const enText = this.state._withEN && item.en ? this.decorateSearch(item.en, this.currentQuery) : "";
       body.innerHTML = `
-        <span class="inspector__section">${section.title}</span>
-        <span><strong>${item.where}</strong>: ${item.what}</span>
-        <span>${item.why}</span>
-        ${this.state._withEN && item.en ? `<span>${item.en}</span>` : ""}
+        <span class="inspector__section">${escapeHTML(section.title)}</span>
+        <span class="inspector__panel"><span class="panel-badge panel-badge--${resolvedPanelKey}">${escapeHTML(panelInfo.short)}</span>${escapeHTML(panelInfo.hint)}</span>
+        <span class="inspector__where where__path">${wherePath}</span>
+        <span class="inspector__what">${whatText}</span>
+        <span class="inspector__why">${whyText}</span>
+        ${enText ? `<span class="inspector__en">${enText}</span>` : ""}
         ${isCritical ? '<span class="inspector__critical">Критичный пункт</span>' : ""}
       `;
       button.disabled = false;
@@ -2377,11 +2862,24 @@
       }
     }
 
+    formatWhere(where = "", query = "") {
+      if (!where) return "";
+      const segments = where
+        .split(/(?:→|->|›|»|>)/)
+        .map((part) => part.trim())
+        .filter(Boolean);
+      if (!segments.length) segments.push(where.trim());
+      return segments
+        .map((segment) => `<span class="where__segment">${this.decorateSearch(segment, query)}</span>`)
+        .join('<span class="where__arrow">→</span>');
+    }
+
     decorateSearch(value, query) {
       if (!value) return "";
-      if (!query) return value;
+      const safe = escapeHTML(value);
+      if (!query) return safe;
       const regex = new RegExp(`(${escapeRegExp(query)})`, "gi");
-      return value.replace(regex, '<mark class="highlight">$1</mark>');
+      return safe.replace(regex, '<mark class="highlight">$1</mark>');
     }
   }
   document.addEventListener("DOMContentLoaded", () => {
