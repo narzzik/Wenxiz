@@ -1,107 +1,282 @@
 <!doctype html>
-<html lang="ru" data-theme="auto">
+<html lang="ru">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>A320neo · MSFS 2024 · Полностью реалистичный чек-лист</title>
+    <title>Wenxiz — Shop smarter. Live better.</title>
     <meta
       name="description"
-      content="Полностью реалистичный чек-лист A320neo для MSFS 2024: детальные SOP, PF/PM callouts, memory items и пошаговая подготовка."
+      content="Современный минималистичный интернет-магазин стильных вещей Wenxiz: премиальная одежда, обувь и аксессуары. Shop smarter. Live better."
     />
-    <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAK0lEQVR4nO3BMQEAAADCoPVPbQ8HFAAAAAAAAAAAAAAAAAAAAAAAAJ8GAAE1wq5cAAAAAElFTkSuQmCC" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="assets/css/app.css" />
     <script defer src="assets/js/app.js"></script>
   </head>
   <body>
-    <noscript>
-      <div class="noscript">
-        Включите JavaScript, чтобы использовать интерактивный чек-лист, либо воспользуйтесь печатью PDF.
-      </div>
-    </noscript>
-    <div class="app" id="app" hidden>
-      <aside class="sidebar" aria-label="Боковое меню">
-        <div class="sidebar__brand">
-          <div class="sidebar__title">
-            <b>A320neo · MSFS 2024</b>
-            <span class="sidebar__subtitle">UNIFIED · v11 · ALL-IN-ONE</span>
-          </div>
-          <div class="sidebar__toggles">
-            <button class="btn btn--small" data-action="theme">Тема</button>
-            <button class="btn btn--small" data-action="compact">Компакт</button>
-            <button class="btn btn--small sidebar__collapse" data-action="toggleSidebar" aria-pressed="false" aria-label="Скрыть боковое меню">
-              ←
+    <header class="site-header">
+      <div class="container">
+        <div class="site-header__inner">
+          <a class="logo" href="#hero" aria-label="Wenxiz">
+            <span>Wenxiz</span>
+          </a>
+          <nav class="site-nav" aria-label="Главная навигация">
+            <button class="site-nav__toggle" type="button" aria-expanded="false" aria-label="Переключить меню">
+              <span></span>
+              <span></span>
+              <span></span>
             </button>
-          </div>
+            <ul class="site-nav__list">
+              <li><a href="#collections">Коллекции</a></li>
+              <li><a href="#popular">Популярное</a></li>
+              <li><a href="#arrival">Новинки</a></li>
+              <li><a href="#footer">Контакты</a></li>
+            </ul>
+          </nav>
+          <a class="btn btn--ghost" href="#popular">Shop Now</a>
         </div>
-        <div class="sidebar__search">
-          <label class="sr-only" for="searchInput">Поиск</label>
-          <input id="searchInput" type="search" placeholder="Поиск… (PACKS / APPR / GPWS…)" autocomplete="off" />
-        </div>
-        <div class="sidebar__filters">
-          <label class="filter">
-            <input id="filterCritical" type="checkbox" />
-            <span>Только критичные</span>
-          </label>
-          <label class="filter">
-            <input id="filterFavorites" type="checkbox" />
-            <span>Только избранные секции</span>
-          </label>
-        </div>
-        <nav class="sidebar__nav" id="nav" aria-label="Навигация по секциям"></nav>
-        <div class="sidebar__stats" id="stats">Прогресс: 0% · Шагов: 0</div>
-        <footer class="sidebar__footer">
-          <p><b>Шорткаты:</b> / поиск, J/K — секция ±, Space — чек, Ctrl+S — экспорт, Ctrl+O — импорт.</p>
-          <p>Учебный материал для симулятора. Не для реальной авиации.</p>
-        </footer>
-      </aside>
-      <main class="main" id="main" tabindex="-1">
-        <header class="topbar" data-shadow>
-          <div class="topbar__inner">
-            <h1 class="topbar__title">A320neo · Полностью реалистичный чек-лист (MSFS 2024)</h1>
-            <p class="topbar__subtitle">
-              Полный профессиональный SOP: от cold & dark до secure, подробные callouts PF/PM, FMA мониторинг, память по авариям и двуязычные подсказки.
-            </p>
-            <div class="topbar__controls">
-              <button class="btn" data-action="expandAll">Развернуть всё</button>
-              <button class="btn" data-action="collapseAll">Свернуть всё</button>
-              <button class="btn btn--ok" data-action="resetAll">Сбросить прогресс</button>
-              <button class="btn btn--ghost" data-action="toggleEN" aria-pressed="false">EN-подсказки</button>
-              <button class="btn" data-action="export">Экспорт JSON</button>
-              <button class="btn" data-action="import">Импорт JSON</button>
-              <button class="btn btn--warn" data-action="print">Печать PDF</button>
-            </div>
-            <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-              <i id="progressBar"></i>
-            </div>
-          </div>
-        </header>
-        <div class="content" id="content">
-          <section class="card">
-            <header class="card__header">
-              <h2>Загрузка…</h2>
-            </header>
-            <div class="card__body">Если пусто — появится окно с ошибкой.</div>
-          </section>
-        </div>
-        <div class="mini" id="miniProgress" aria-live="polite">
-          <span>Глобальный прогресс:</span>
-          <span class="mini__pct" id="miniPct">0%</span>
-          <div class="progress progress--mini"><i id="miniBar"></i></div>
-        </div>
-        <div class="fab" aria-label="Быстрые действия">
-          <button class="fab__btn" data-action="scrollTop" title="Вверх">↑</button>
-          <button class="fab__btn" data-action="scrollBottom" title="Вниз">↓</button>
-        </div>
-        <footer class="main__footer">Учебный материал. Не для реальной авиации.</footer>
-      </main>
-    </div>
-    <div class="overlay" id="errorOverlay" role="alertdialog" aria-modal="true" hidden>
-      <div class="overlay__dialog" role="document">
-        <h2>Ошибка скрипта</h2>
-        <p id="errorMessage"></p>
-        <pre id="errorStack" tabindex="0"></pre>
-        <button class="btn btn--ok" data-action="closeError">Скрыть</button>
       </div>
-    </div>
+    </header>
+
+    <main>
+      <section class="hero" id="hero">
+        <div class="container hero__grid">
+          <div class="hero__content" data-animate>
+            <span class="hero__eyebrow">Premium lifestyle store</span>
+            <h1>Shop smarter. Live better.</h1>
+            <p>
+              Wenxiz подбирает лучшие коллекции одежды, обуви и аксессуаров с акцентом на
+              дизайн, функциональность и экологичные материалы.
+            </p>
+            <div class="hero__actions">
+              <a class="btn btn--primary" href="#popular">Shop Now</a>
+              <a class="btn btn--ghost" href="#collections">Learn More</a>
+            </div>
+          </div>
+          <div class="hero__media" data-animate>
+            <picture>
+              <source
+                srcset="https://images.unsplash.com/photo-1542293787938-4d2226c9aafe?auto=format&fit=crop&w=1200&q=80"
+                media="(min-width: 768px)"
+              />
+              <img
+                src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80"
+                alt="Стильная модель в минималистичной одежде"
+                loading="lazy"
+              />
+            </picture>
+          </div>
+        </div>
+      </section>
+
+      <section class="collections" id="collections">
+        <div class="container">
+          <div class="section-heading" data-animate>
+            <span class="section-eyebrow">Коллекции</span>
+            <h2>Создайте собственный стиль</h2>
+            <p>Найдите вдохновение в тщательно подобранных подборках одежды и аксессуаров.</p>
+          </div>
+          <div class="collections__grid">
+            <article class="collection-card" data-animate>
+              <img
+                src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80"
+                alt="Коллекция уличной одежды"
+                loading="lazy"
+              />
+              <div class="collection-card__overlay">
+                <h3>City Pulse</h3>
+                <p>Уличный стиль, вдохновлённый мегаполисом.</p>
+              </div>
+            </article>
+            <article class="collection-card" data-animate>
+              <img
+                src="https://images.unsplash.com/photo-1528702748617-c64d49f918af?auto=format&fit=crop&w=800&q=80"
+                alt="Коллекция спортивной одежды"
+                loading="lazy"
+              />
+              <div class="collection-card__overlay">
+                <h3>Motion Lab</h3>
+                <p>Технологичная экипировка для активной жизни.</p>
+              </div>
+            </article>
+            <article class="collection-card" data-animate>
+              <img
+                src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80"
+                alt="Коллекция минималистичных аксессуаров"
+                loading="lazy"
+              />
+              <div class="collection-card__overlay">
+                <h3>Everyday Icons</h3>
+                <p>Аксессуары с характером и чистым дизайном.</p>
+              </div>
+            </article>
+            <article class="collection-card" data-animate>
+              <img
+                src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80"
+                alt="Коллекция дизайнерской обуви"
+                loading="lazy"
+              />
+              <div class="collection-card__overlay">
+                <h3>Future Form</h3>
+                <p>Премиальная обувь для города и путешествий.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="popular" id="popular">
+        <div class="container">
+          <div class="section-heading" data-animate>
+            <span class="section-eyebrow">Популярное</span>
+            <h2>Выбор сообщества Wenxiz</h2>
+            <p>Иконы сезона, которые сочетают стиль, комфорт и инновации.</p>
+          </div>
+          <div class="product-grid">
+            <article class="product-card" data-animate>
+              <img
+                src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80"
+                alt="Минималистичное худи"
+                loading="lazy"
+              />
+              <div class="product-card__body">
+                <div>
+                  <h3>Adaptive Hoodie</h3>
+                  <p>Терморегулирующая ткань из переработанного материала.</p>
+                </div>
+                <div class="product-card__footer">
+                  <span class="product-card__price">12 990 ₽</span>
+                  <button class="btn btn--outline" type="button">Add to Cart</button>
+                </div>
+              </div>
+            </article>
+            <article class="product-card" data-animate>
+              <img
+                src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80"
+                alt="Белые кроссовки"
+                loading="lazy"
+              />
+              <div class="product-card__body">
+                <div>
+                  <h3>AirFlow Runner</h3>
+                  <p>Ультралёгкая подошва и поддержка стопы при каждом шаге.</p>
+                </div>
+                <div class="product-card__footer">
+                  <span class="product-card__price">16 490 ₽</span>
+                  <button class="btn btn--outline" type="button">Add to Cart</button>
+                </div>
+              </div>
+            </article>
+            <article class="product-card" data-animate>
+              <img
+                src="https://images.unsplash.com/photo-1528702748617-c64d49f918af?auto=format&fit=crop&w=800&q=80"
+                alt="Спортивный костюм"
+                loading="lazy"
+              />
+              <div class="product-card__body">
+                <div>
+                  <h3>Velocity Set</h3>
+                  <p>Комплект для тренировок с адаптивными зонами вентиляции.</p>
+                </div>
+                <div class="product-card__footer">
+                  <span class="product-card__price">14 790 ₽</span>
+                  <button class="btn btn--outline" type="button">Add to Cart</button>
+                </div>
+              </div>
+            </article>
+            <article class="product-card" data-animate>
+              <img
+                src="https://images.unsplash.com/photo-1534224039826-c7a0eda0e6b7?auto=format&fit=crop&w=800&q=80"
+                alt="Минималистичные часы"
+                loading="lazy"
+              />
+              <div class="product-card__body">
+                <div>
+                  <h3>Linear Watch</h3>
+                  <p>Точный механизм и сапфировое стекло в алюминиевом корпусе.</p>
+                </div>
+                <div class="product-card__footer">
+                  <span class="product-card__price">18 300 ₽</span>
+                  <button class="btn btn--outline" type="button">Add to Cart</button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="banner" id="arrival" aria-label="Скидка недели">
+        <div class="container banner__inner" data-animate>
+          <div>
+            <span class="section-eyebrow">Скидка недели</span>
+            <h2>New Arrivals · Up to 30% Off</h2>
+            <p>Выберите свежие релизы Wenxiz и получите ранний доступ к закрытым коллекциям.</p>
+          </div>
+          <a class="btn btn--primary" href="#popular">Открыть коллекцию</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="footer">
+      <div class="container site-footer__grid">
+        <div>
+          <a class="logo" href="#hero" aria-label="Wenxiz">
+            <span>Wenxiz</span>
+          </a>
+          <p>Shop smarter. Live better. Современный магазин премиальных вещей для активной жизни.</p>
+        </div>
+        <div>
+          <h3>Навигация</h3>
+          <ul>
+            <li><a href="#collections">Коллекции</a></li>
+            <li><a href="#popular">Популярное</a></li>
+            <li><a href="#arrival">Новинки</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Связаться</h3>
+          <ul>
+            <li><a href="mailto:hello@wenxiz.com">hello@wenxiz.com</a></li>
+            <li><a href="tel:+74950000000">+7 (495) 000-00-00</a></li>
+            <li>Москва, Большая Дмитровка 11</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Мы в соцсетях</h3>
+          <div class="footer-social">
+            <a href="https://www.instagram.com" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 7.2A4.8 4.8 0 1 0 16.8 12 4.8 4.8 0 0 0 12 7.2Zm0 7.8A3 3 0 1 1 15 12a3 3 0 0 1-3 3Zm5.94-8.82a1.12 1.12 0 1 1-1.12-1.12 1.12 1.12 0 0 1 1.12 1.12ZM21.6 7.2a6.06 6.06 0 0 0-1.64-4.36A6.06 6.06 0 0 0 15.6 1.2H8.4a6.06 6.06 0 0 0-4.36 1.64A6.06 6.06 0 0 0 2.4 7.2v7.2a6.06 6.06 0 0 0 1.64 4.36A6.06 6.06 0 0 0 8.4 20.4h7.2a6.06 6.06 0 0 0 4.36-1.64A6.06 6.06 0 0 0 21.6 14.4Zm-1.8 7.2a4.26 4.26 0 0 1-4.2 4.2H8.4a4.26 4.26 0 0 1-4.2-4.2V7.2a4.26 4.26 0 0 1 4.2-4.2h7.2a4.26 4.26 0 0 1 4.2 4.2Z"
+                />
+              </svg>
+            </a>
+            <a href="https://www.facebook.com" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M15.12 8.64H13.5V7.2c0-.48.32-.6.54-.6h1.02V4.26h-1.62c-1.8 0-2.22 1.32-2.22 2.16v2.22H9.9v2.22h1.32v6.9h2.28v-6.9h1.44Z"
+                />
+              </svg>
+            </a>
+            <a href="https://www.youtube.com" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M21.6 8.16a2.4 2.4 0 0 0-1.68-1.68C18.12 6 12 6 12 6s-6.12 0-7.92.48A2.4 2.4 0 0 0 2.4 8.16 25.2 25.2 0 0 0 1.92 12a25.2 25.2 0 0 0 .48 3.84 2.4 2.4 0 0 0 1.68 1.68C5.88 18 12 18 12 18s6.12 0 7.92-.48a2.4 2.4 0 0 0 1.68-1.68A25.2 25.2 0 0 0 22.08 12a25.2 25.2 0 0 0-.48-3.84ZM10.2 14.76V9.24L15.12 12Z"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <div class="container">
+          <p>© Wenxiz, 2024. Все права защищены.</p>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
