@@ -1,106 +1,517 @@
-<!doctype html>
-<html lang="ru" data-theme="auto">
+<!DOCTYPE html>
+<html lang="ru">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>A320neo · MSFS 2024 · Полностью реалистичный чек-лист</title>
+    <title>Pulse — Shop smarter. Live better.</title>
     <meta
       name="description"
-      content="Полностью реалистичный чек-лист A320neo для MSFS 2024: детальные SOP, PF/PM callouts, memory items и пошаговая подготовка."
+      content="Стилизация интернет-магазина в современном минималистичном стиле: одежда, обувь и аксессуары премиального качества."
     />
-    <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAK0lEQVR4nO3BMQEAAADCoPVPbQ8HFAAAAAAAAAAAAAAAAAAAAAAAAJ8GAAE1wq5cAAAAAElFTkSuQmCC" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="assets/css/app.css" />
     <script defer src="assets/js/app.js"></script>
   </head>
   <body>
-    <noscript>
-      <div class="noscript">
-        Включите JavaScript, чтобы использовать интерактивный чек-лист, либо воспользуйтесь печатью PDF.
-      </div>
-    </noscript>
-    <div class="app" id="app" hidden>
-      <aside class="sidebar" aria-label="Боковое меню">
-        <div class="sidebar__brand">
-          <div class="sidebar__title">
-            <b>A320neo · MSFS 2024</b>
-            <span class="sidebar__subtitle">UNIFIED · v11 · ALL-IN-ONE</span>
+    <header class="site-header">
+      <div class="container">
+        <nav class="nav" aria-label="Основная навигация">
+          <a class="logo" href="#hero" aria-label="Pulse Home">Pulse</a>
+          <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="primaryNav">
+            <span class="nav__toggle-line"></span>
+            <span class="nav__toggle-line"></span>
+          </button>
+          <div class="nav__links" id="primaryNav" data-open="false">
+            <a href="#collections">Коллекции</a>
+            <a href="#popular">Популярное</a>
+            <a href="#experience">Преимущества</a>
+            <a href="#highlights">Новинки</a>
+            <a href="#contact">Контакты</a>
           </div>
-          <div class="sidebar__toggles">
-            <button class="btn btn--small" data-action="theme">Тема</button>
-            <button class="btn btn--small" data-action="compact">Компакт</button>
-            <button class="btn btn--small sidebar__collapse" data-action="toggleSidebar" aria-pressed="false" aria-label="Скрыть боковое меню">
-              ←
+          <div class="nav__actions">
+            <button
+              class="nav__action"
+              type="button"
+              data-account-toggle
+              aria-expanded="false"
+              aria-controls="accountPanel"
+            >
+              <span class="nav__action-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path
+                    d="M12 12.5a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2.5c-4.29 0-8 2.17-8 4.84A.66.66 0 0 0 4.66 20h14.68A.66.66 0 0 0 20 19.34C20 17.17 16.29 15 12 15z"
+                  />
+                </svg>
+              </span>
+              <span data-account-button-label>Войти</span>
+            </button>
+            <button class="nav__action nav__action--ghost" type="button" data-open-search>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.71.71l.27.28v.79l4.75 4.74a.75.75 0 0 0 1.06-1.06L15.5 14zm-5 0a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"
+                />
+              </svg>
+              <span>Поиск</span>
+            </button>
+            <button
+              class="nav__action nav__action--icon"
+              type="button"
+              data-cart-toggle
+              aria-expanded="false"
+              aria-label="Открыть корзину"
+              data-cart-label="Открыть корзину"
+            >
+              <span class="nav__action-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path
+                    d="M7 4h-2a1 1 0 1 0 0 2h1.2l1.55 7.45a2 2 0 0 0 1.96 1.55h7.33a2 2 0 0 0 1.95-1.53l1.02-4.09A1 1 0 0 0 19.02 8H8.32l-.33-1.58A2 2 0 0 0 6 4zm3 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm7 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
+                  />
+                </svg>
+              </span>
+              <span class="nav__action-label">Корзина</span>
+              <span class="nav__badge" data-cart-count>0</span>
             </button>
           </div>
-        </div>
-        <div class="sidebar__search">
-          <label class="sr-only" for="searchInput">Поиск</label>
-          <input id="searchInput" type="search" placeholder="Поиск… (PACKS / APPR / GPWS…)" autocomplete="off" />
-        </div>
-        <div class="sidebar__filters">
-          <label class="filter">
-            <input id="filterCritical" type="checkbox" />
-            <span>Только критичные</span>
-          </label>
-          <label class="filter">
-            <input id="filterFavorites" type="checkbox" />
-            <span>Только избранные секции</span>
-          </label>
-        </div>
-        <nav class="sidebar__nav" id="nav" aria-label="Навигация по секциям"></nav>
-        <div class="sidebar__stats" id="stats">Прогресс: 0% · Шагов: 0</div>
-        <footer class="sidebar__footer">
-          <p><b>Шорткаты:</b> / поиск, J/K — секция ±, Space — чек, Ctrl+S — экспорт, Ctrl+O — импорт.</p>
-          <p>Учебный материал для симулятора. Не для реальной авиации.</p>
-        </footer>
-      </aside>
-      <main class="main" id="main" tabindex="-1">
-        <header class="topbar" data-shadow>
-          <div class="topbar__inner">
-            <h1 class="topbar__title">A320neo · Полностью реалистичный чек-лист (MSFS 2024)</h1>
-            <p class="topbar__subtitle">
-              Полный профессиональный SOP: от cold & dark до secure, подробные callouts PF/PM, FMA мониторинг, память по авариям и двуязычные подсказки.
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="hero">
+        <div class="container hero__inner">
+          <div class="hero__content">
+            <p class="hero__tag">Shop smarter. Live better.</p>
+            <h1 class="hero__title">Стильные вещи, которые работают на вас каждый день</h1>
+            <p class="hero__text">
+              Коллекция премиальной одежды, обуви и аксессуаров, созданная для динамичных людей. Чистые линии, качественные
+              материалы, выразительные детали — всё, что вы любите в брендах нового поколения.
             </p>
-            <div class="topbar__controls">
-              <button class="btn" data-action="expandAll">Развернуть всё</button>
-              <button class="btn" data-action="collapseAll">Свернуть всё</button>
-              <button class="btn btn--ok" data-action="resetAll">Сбросить прогресс</button>
-              <button class="btn btn--ghost" data-action="toggleEN" aria-pressed="false">EN-подсказки</button>
-              <button class="btn" data-action="export">Экспорт JSON</button>
-              <button class="btn" data-action="import">Импорт JSON</button>
-              <button class="btn btn--warn" data-action="print">Печать PDF</button>
-            </div>
-            <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-              <i id="progressBar"></i>
+            <div class="hero__actions">
+              <a class="btn btn--primary" href="#popular">Shop Now</a>
+              <a class="btn btn--ghost" href="#collections">Learn More</a>
             </div>
           </div>
+          <figure class="hero__media" aria-label="Изображение товара">
+            <img
+              src="https://images.unsplash.com/photo-1514996937319-344454492b37?auto=format&fit=crop&w=900&q=80"
+              alt="Высокие кроссовки минималистичного дизайна"
+              loading="lazy"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <section class="experience" id="experience">
+        <div class="container experience__inner">
+          <article class="experience-card">
+            <div class="experience-card__icon" aria-hidden="true">⏱</div>
+            <h3>Быстрая доставка</h3>
+            <p>Доставим за 24 часа в Москве и Санкт-Петербурге, в регионы — за 2–4 дня.</p>
+          </article>
+          <article class="experience-card">
+            <div class="experience-card__icon" aria-hidden="true">⭐️</div>
+            <h3>Premium-подборка</h3>
+            <p>Команда стилистов курирует каждую коллекцию, чтобы вы получали лучшее.</p>
+          </article>
+          <article class="experience-card">
+            <div class="experience-card__icon" aria-hidden="true">💳</div>
+            <h3>Умная оплата</h3>
+            <p>Apple Pay, карты и рассрочка без переплат — выбирайте, что удобно.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="collections" id="collections">
+        <div class="container">
+          <header class="section-header">
+            <h2>Коллекции</h2>
+            <p>Ключевые направления, вдохновлённые эстетикой Apple и динамикой Nike.</p>
+          </header>
+          <div class="collection-grid">
+            <article class="collection-card">
+              <img
+                src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80"
+                alt="Урбанистическая коллекция"
+                loading="lazy"
+              />
+              <div class="collection-card__body">
+                <h3>Urban Moves</h3>
+                <p>Городской функционал и акценты в чёрном и графитовом.</p>
+              </div>
+            </article>
+            <article class="collection-card">
+              <img
+                src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80"
+                alt="Минималистичная коллекция"
+                loading="lazy"
+              />
+              <div class="collection-card__body">
+                <h3>Pure Form</h3>
+                <p>Чистые силуэты и технологичные ткани для ежедневных образов.</p>
+              </div>
+            </article>
+            <article class="collection-card">
+              <img
+                src="https://images.unsplash.com/photo-1537832816519-689ad163238b?auto=format&fit=crop&w=800&q=80"
+                alt="Спортивная коллекция"
+                loading="lazy"
+              />
+              <div class="collection-card__body">
+                <h3>Momentum</h3>
+                <p>Спортивная динамика и смелые акценты для тренировок и путешествий.</p>
+              </div>
+            </article>
+            <article class="collection-card">
+              <img
+                src="https://images.unsplash.com/photo-1517840933437-c41356892b35?auto=format&fit=crop&w=800&q=80"
+                alt="Аксессуары"
+                loading="lazy"
+              />
+              <div class="collection-card__body">
+                <h3>Essential Accessories</h3>
+                <p>Минималистичные детали, которые делают образ завершённым.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="popular" id="popular">
+        <div class="container">
+          <header class="section-header">
+            <h2>Популярное</h2>
+            <p>Выбор покупателей для уверенного старта сезона.</p>
+          </header>
+          <div class="product-controls" role="tablist" aria-label="Фильтр товаров">
+            <button class="chip is-active" type="button" data-filter="all" role="tab" aria-selected="true">Все</button>
+            <button class="chip" type="button" data-filter="outerwear" role="tab" aria-selected="false">Одежда</button>
+            <button class="chip" type="button" data-filter="footwear" role="tab" aria-selected="false">Обувь</button>
+            <button class="chip" type="button" data-filter="accessories" role="tab" aria-selected="false">Аксессуары</button>
+          </div>
+          <div class="product-grid">
+            <article class="product-card" data-product-id="tech-shell-jacket" data-category="outerwear" data-price="19990">
+              <div class="product-card__image">
+                <img
+                  src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=700&q=80"
+                  alt="Чёрная куртка"
+                  loading="lazy"
+                />
+                <span class="badge">Новинка</span>
+              </div>
+              <div class="product-card__body">
+                <h3>Tech Shell Jacket</h3>
+                <p class="product-card__price">19 990 ₽</p>
+                <div class="product-card__actions">
+                  <button class="btn btn--full" type="button" data-add-to-cart>Добавить</button>
+                  <button class="product-card__favorite" type="button" data-toggle-favorite aria-pressed="false" aria-label="Добавить в избранное">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M12 21.35 10.55 20C5.4 15.36 2 12.27 2 8.5A4.5 4.5 0 0 1 6.5 4 5 5 0 0 1 12 7.09 5 5 0 0 1 17.5 4 4.5 4.5 0 0 1 22 8.5c0 3.77-3.4 6.86-8.55 11.54z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </article>
+            <article class="product-card" data-product-id="motion-runner" data-category="footwear" data-price="14490">
+              <div class="product-card__image">
+                <img
+                  src="https://images.unsplash.com/photo-1485518882345-15568b007407?auto=format&fit=crop&w=700&q=80"
+                  alt="Белые кроссовки"
+                  loading="lazy"
+                />
+                <span class="badge badge--accent">Хит</span>
+              </div>
+              <div class="product-card__body">
+                <h3>Motion Runner</h3>
+                <p class="product-card__price">14 490 ₽</p>
+                <div class="product-card__actions">
+                  <button class="btn btn--full" type="button" data-add-to-cart>Добавить</button>
+                  <button class="product-card__favorite" type="button" data-toggle-favorite aria-pressed="false" aria-label="Добавить в избранное">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M12 21.35 10.55 20C5.4 15.36 2 12.27 2 8.5A4.5 4.5 0 0 1 6.5 4 5 5 0 0 1 12 7.09 5 5 0 0 1 17.5 4 4.5 4.5 0 0 1 22 8.5c0 3.77-3.4 6.86-8.55 11.54z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </article>
+            <article class="product-card" data-product-id="flex-bag" data-category="accessories" data-price="7990">
+              <div class="product-card__image">
+                <img
+                  src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=700&q=80"
+                  alt="Кроссбоди сумка"
+                  loading="lazy"
+                />
+              </div>
+              <div class="product-card__body">
+                <h3>Crossbody Flex Bag</h3>
+                <p class="product-card__price">7 990 ₽</p>
+                <div class="product-card__actions">
+                  <button class="btn btn--full" type="button" data-add-to-cart>Добавить</button>
+                  <button class="product-card__favorite" type="button" data-toggle-favorite aria-pressed="false" aria-label="Добавить в избранное">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M12 21.35 10.55 20C5.4 15.36 2 12.27 2 8.5A4.5 4.5 0 0 1 6.5 4 5 5 0 0 1 12 7.09 5 5 0 0 1 17.5 4 4.5 4.5 0 0 1 22 8.5c0 3.77-3.4 6.86-8.55 11.54z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </article>
+            <article class="product-card" data-product-id="highline-sneaker" data-category="footwear" data-price="16490">
+              <div class="product-card__image">
+                <img
+                  src="https://images.unsplash.com/photo-1514996937319-344454492b37?auto=format&fit=crop&w=700&q=80"
+                  alt="Высокие кроссовки"
+                  loading="lazy"
+                />
+              </div>
+              <div class="product-card__body">
+                <h3>Highline Sneaker</h3>
+                <p class="product-card__price">16 490 ₽</p>
+                <div class="product-card__actions">
+                  <button class="btn btn--full" type="button" data-add-to-cart>Добавить</button>
+                  <button class="product-card__favorite" type="button" data-toggle-favorite aria-pressed="false" aria-label="Добавить в избранное">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M12 21.35 10.55 20C5.4 15.36 2 12.27 2 8.5A4.5 4.5 0 0 1 6.5 4 5 5 0 0 1 12 7.09 5 5 0 0 1 17.5 4 4.5 4.5 0 0 1 22 8.5c0 3.77-3.4 6.86-8.55 11.54z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="account-intro" id="account">
+        <div class="container account-intro__inner">
+          <div class="account-intro__content">
+            <p class="account-intro__eyebrow">Pulse ID</p>
+            <h2>Персональный кабинет без лишних шагов</h2>
+            <p>
+              Регистрация откроет быстрый доступ к истории заказов, сохранённым избранным и персональным предложениям.
+              Один профиль — все устройства.
+            </p>
+            <ul class="account-intro__list">
+              <li><strong>10% скидка</strong> на первый заказ по промокоду WELCOME10.</li>
+              <li>Синхронизация избранного и корзины между телефонами и ноутбуком.</li>
+              <li>Уведомления о поступлении размеров и статусе доставки.</li>
+            </ul>
+            <div class="account-intro__actions">
+              <button class="btn btn--primary" type="button" data-account-toggle>Создать Pulse ID</button>
+              <button class="btn btn--ghost" type="button" data-account-toggle>Войти</button>
+            </div>
+          </div>
+          <div class="account-intro__preview" aria-hidden="true">
+            <div class="account-intro__card">
+              <h3>Последние заказы</h3>
+              <ul>
+                <li>
+                  <span>Motion Runner · 28 мая</span>
+                  <strong>14 490 ₽</strong>
+                </li>
+                <li>
+                  <span>Tech Shell Jacket · 19 мая</span>
+                  <strong>19 990 ₽</strong>
+                </li>
+                <li>
+                  <span>Crossbody Flex Bag · 3 мая</span>
+                  <strong>7 990 ₽</strong>
+                </li>
+              </ul>
+            </div>
+            <div class="account-intro__card account-intro__card--glass">
+              <h3>Преимущества Pulse+</h3>
+              <p>Приоритетная поддержка, бесплатный возврат и ранний доступ к лимитированным дропам.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="highlight" id="highlights">
+        <div class="container highlight__inner">
+          <div class="highlight__content">
+            <p class="highlight__eyebrow">Скидка недели</p>
+            <h2>Minimal Runner Set</h2>
+            <p>Собранный комплект для тренировок и отдыха. Только сейчас — минус 20% при заказе онлайн.</p>
+            <a class="btn btn--inverse" href="#popular">Получить скидку</a>
+          </div>
+          <img
+            src="https://images.unsplash.com/photo-1514996937319-344454492b37?auto=format&fit=crop&w=1000&q=80"
+            alt="Кроссовки и аксессуары"
+            loading="lazy"
+          />
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="contact">
+      <div class="container footer__inner">
+        <div class="footer__brand">
+          <a class="logo" href="#hero">Pulse</a>
+          <p>Shop smarter. Live better.</p>
+        </div>
+        <div class="footer__newsletter">
+          <h4>Подпишитесь на новинки</h4>
+          <form class="newsletter-form" data-newsletter>
+            <label class="sr-only" for="newsletter-email">Email</label>
+            <input id="newsletter-email" type="email" name="email" placeholder="email@pulse.store" required />
+            <button type="submit" class="btn btn--primary">Подписаться</button>
+          </form>
+          <p class="newsletter-note">Получайте доступ к ранним релизам и эксклюзивным скидкам.</p>
+        </div>
+        <div class="footer__nav">
+          <h4>Навигация</h4>
+          <ul>
+            <li><a href="#collections">Коллекции</a></li>
+            <li><a href="#popular">Популярное</a></li>
+            <li><a href="#highlights">Акции</a></li>
+            <li><a href="#contact">Контакты</a></li>
+          </ul>
+        </div>
+        <div class="footer__contact">
+          <h4>Контакты</h4>
+          <ul>
+            <li><a href="mailto:hello@pulse.store">hello@pulse.store</a></li>
+            <li><a href="tel:+79991234567">+7 (999) 123-45-67</a></li>
+          </ul>
+          <div class="footer__social" aria-label="Социальные сети">
+            <a href="#" aria-label="Instagram" class="social-icon">IG</a>
+            <a href="#" aria-label="YouTube" class="social-icon">YT</a>
+            <a href="#" aria-label="Telegram" class="social-icon">TG</a>
+          </div>
+        </div>
+      </div>
+      <p class="footer__note">© 2024 Pulse. Все права защищены.</p>
+    </footer>
+
+    <div class="cart" data-cart-panel aria-hidden="true">
+      <div class="cart__overlay" data-cart-toggle aria-hidden="true"></div>
+      <aside class="cart__drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+        <header class="cart__header">
+          <h2 id="cart-title">Ваша корзина</h2>
+          <button class="cart__close" type="button" data-cart-toggle aria-label="Закрыть корзину">
+            <span></span>
+            <span></span>
+          </button>
         </header>
-        <div class="content" id="content">
-          <section class="card">
-            <header class="card__header">
-              <h2>Загрузка…</h2>
-            </header>
-            <div class="card__body">Если пусто — появится окно с ошибкой.</div>
-          </section>
+        <div class="cart__body" data-cart-body>
+          <p class="cart__empty">Добавьте товары, чтобы увидеть их здесь.</p>
         </div>
-        <div class="mini" id="miniProgress" aria-live="polite">
-          <span>Глобальный прогресс:</span>
-          <span class="mini__pct" id="miniPct">0%</span>
-          <div class="progress progress--mini"><i id="miniBar"></i></div>
-        </div>
-        <div class="fab" aria-label="Быстрые действия">
-          <button class="fab__btn" data-action="scrollTop" title="Вверх">↑</button>
-          <button class="fab__btn" data-action="scrollBottom" title="Вниз">↓</button>
-        </div>
-        <footer class="main__footer">Учебный материал. Не для реальной авиации.</footer>
-      </main>
+        <footer class="cart__footer">
+          <div class="cart__summary">
+            <span>Итого</span>
+            <strong data-cart-total>0 ₽</strong>
+          </div>
+          <button class="btn btn--primary btn--full" type="button" data-checkout disabled>Оформить заказ</button>
+        </footer>
+      </aside>
     </div>
-    <div class="overlay" id="errorOverlay" role="alertdialog" aria-modal="true" hidden>
-      <div class="overlay__dialog" role="document">
-        <h2>Ошибка скрипта</h2>
-        <p id="errorMessage"></p>
-        <pre id="errorStack" tabindex="0"></pre>
-        <button class="btn btn--ok" data-action="closeError">Скрыть</button>
+
+    <div class="search" data-search-panel aria-hidden="true">
+      <div class="search__overlay" data-close-search aria-hidden="true"></div>
+      <div class="search__dialog" role="dialog" aria-modal="true" aria-labelledby="search-title">
+        <form class="search__form" role="search" data-search-form>
+          <label class="sr-only" for="site-search">Поиск по каталогу</label>
+          <div class="search__field">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.71.71l.27.28v.79l4.75 4.74a.75.75 0 0 0 1.06-1.06L15.5 14zm-5 0a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"
+              />
+            </svg>
+            <input
+              type="search"
+              id="site-search"
+              name="search"
+              placeholder="Что вы ищете?"
+              autocomplete="off"
+              data-search-input
+            />
+            <button class="search__close" type="button" data-close-search aria-label="Закрыть поиск">
+              <span></span>
+              <span></span>
+            </button>
+          </div>
+        </form>
+        <div class="search__results" data-search-results aria-live="polite">
+          <p class="search__hint" id="search-title">Начните печатать, чтобы увидеть товары.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="account" data-account-panel aria-hidden="true" id="accountPanel">
+      <div class="account__overlay" data-close-account aria-hidden="true"></div>
+      <div class="account__dialog" role="dialog" aria-modal="true" aria-labelledby="account-title">
+        <header class="account__header">
+          <div>
+            <p class="account__eyebrow">Pulse ID</p>
+            <h2 id="account-title">Личный кабинет</h2>
+          </div>
+          <button class="account__close" type="button" data-close-account aria-label="Закрыть личный кабинет">
+            <span></span>
+            <span></span>
+          </button>
+        </header>
+        <div class="account__body">
+          <div class="account__guest" data-account-guest>
+            <p class="account__lead">
+              Создайте профиль, чтобы отслеживать заказы, получать персональные скидки и управлять избранными товарами на всех
+              устройствах.
+            </p>
+            <form class="account-form" data-account-form novalidate>
+              <div class="account-form__field">
+                <label for="account-name">Имя</label>
+                <input id="account-name" type="text" name="name" autocomplete="name" required />
+              </div>
+              <div class="account-form__field">
+                <label for="account-email">Email</label>
+                <input id="account-email" type="email" name="email" autocomplete="email" inputmode="email" required />
+              </div>
+              <div class="account-form__field">
+                <label for="account-password">Пароль</label>
+                <input id="account-password" type="password" name="password" autocomplete="new-password" minlength="6" required />
+              </div>
+              <button class="btn btn--primary btn--full" type="submit">Создать Pulse ID</button>
+            </form>
+            <p class="account__feedback" data-account-feedback aria-live="polite"></p>
+            <ul class="account-benefits">
+              <li>10% приветственная скидка и бесплатная доставка на первый заказ.</li>
+              <li>Синхронизация избранного и истории заказов между устройствами.</li>
+              <li>Детальные статусы доставки и напоминания о возвратах.</li>
+            </ul>
+          </div>
+          <div class="account__dashboard" data-account-dashboard hidden>
+            <section class="account__welcome">
+              <h3>Добро пожаловать, <span data-account-name></span></h3>
+              <p>
+                Ваш бонус: <strong data-account-discount></strong>. Скидка активна 7 дней.
+              </p>
+              <p class="account__meta">
+                Уровень: <span data-account-loyalty></span> · с <span data-account-registered></span>
+              </p>
+            </section>
+            <section class="account__orders">
+              <div class="account__orders-header">
+                <h3>Последние заказы</h3>
+                <a href="#popular">Перейти к каталогу</a>
+              </div>
+              <ul class="order-list" data-account-orders></ul>
+            </section>
+            <section class="account__contact">
+              <p>Мы будем держать вас в курсе на <strong data-account-email></strong>.</p>
+              <button class="btn btn--ghost btn--full" type="button" data-account-logout>Выйти</button>
+            </section>
+          </div>
+        </div>
       </div>
     </div>
   </body>
